@@ -1,5 +1,5 @@
 <template>
   <div>
-    <router-view></router-view>
+    排行榜
   </div>
 </template>

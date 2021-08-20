@@ -1,5 +1,5 @@
 <template>
   <div>
-    <router-view></router-view>
+    歌单
   </div>
 </template>
