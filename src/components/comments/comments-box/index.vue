@@ -1,6 +1,9 @@
 <template>
   <div class="flex center">
-    <div class="pic"></div>
+    <div class="pic" v-if="loginState">
+      <img :src="avatarUrl" alt="" />
+    </div>
+    <div class="pic" v-else></div>
     <div class="text ml-30 mr-16">
       <textarea name="" id="" cols="60" rows="8" v-model="text"></textarea>
     </div>
@@ -16,7 +19,22 @@ export default {
   data() {
     return {
       text: "",
+      avatarUrl: "",
+      loginState: false,
     };
+  },
+  watch: {
+    "$store.state.loginState"(loginState) {
+      this.loginState = loginState;
+      console.log(this.loginState, "kkkk");
+      if (this.loginState) {
+        const information =
+          window.localStorage.getItem("userInfo") &&
+          JSON.parse(window.localStorage.getItem("userInfo"));
+        const { avatarUrl } = information;
+        this.avatarUrl = avatarUrl;
+      }
+    },
   },
   methods: {
     async publish() {
@@ -39,5 +57,13 @@ export default {
   background: url("../../../assets/img/comments.jpg");
   background-size: contain;
   background-repeat: no-repeat;
+}
+.picPerson {
+  width: 115px;
+  height: 115px;
+}
+.picPerson img {
+  width: 100%;
+  height: 100%;
 }
 </style>

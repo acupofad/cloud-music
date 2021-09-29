@@ -17,8 +17,12 @@
       </div>
     </div>
     <div class="login">
-      <div class="logo" @click="change"></div>
-      <div>点击头像登录</div>
+      <div class="portrait" v-if="loginState" @click="logOut">
+        <img :src="avatarUrl" alt="" />
+      </div>
+      <div class="logo" @click="change" v-else></div>
+      <div v-if="loginState">{{ nickname }}</div>
+      <div v-else>点击头像登录</div>
     </div>
     <div class="box">
       <login
@@ -47,9 +51,32 @@ export default {
       songs: "",
       loginFormVisible: false,
       signUpFormVisible: false,
+      loginState: false,
+      avatarUrl: "",
+      nickname: "",
     };
   },
+  created() {
+    this.getUser();
+  },
+  watch: {
+    "$store.state.loginState"(loginState) {
+      this.loginState = loginState;
+      if (this.loginState) this.getUser();
+    },
+  },
   methods: {
+    getUser() {
+      const information =
+        window.localStorage.getItem("userInfo") &&
+        JSON.parse(window.localStorage.getItem("userInfo"));
+      if (information) {
+        this.loginState = true;
+        const { avatarUrl, nickname } = information;
+        this.avatarUrl = avatarUrl;
+        this.nickname = nickname;
+      }
+    },
     change() {
       this.loginFormVisible = !this.loginFormVisible;
     },
@@ -59,6 +86,27 @@ export default {
     signUp() {
       this.change();
       this.sign();
+    },
+    logOut() {
+      this.$confirm("将退出登陆状态, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+      })
+        .then(() => {
+          window.localStorage.setItem("userInfo", null);
+          this.$store.commit("updateLoginState", false);
+          this.$router.go(0);
+          this.$message({
+            type: "success",
+            message: "退出成功!",
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消退出",
+          });
+        });
     },
   },
 };
@@ -113,6 +161,17 @@ export default {
 /deep/ .el-input__icon {
   line-height: 28px;
   color: #fff;
+}
+.portrait {
+  margin-right: 8px;
+  width: 30px;
+  height: 30px;
+}
+.portrait img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  z-index: 999;
 }
 .logo {
   margin-right: 8px;

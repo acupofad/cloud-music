@@ -15,7 +15,10 @@ export default new Vuex.Store({
     musicList: [],
     currentIndex: -1,
     songName: "",
-    playState: false
+    playState: false,
+    loginState: false,
+    nickname: '',
+    avatarUrl: ''
   },
   mutations: {
     setUser(state, user) {
@@ -39,6 +42,10 @@ export default new Vuex.Store({
     },
     changePlayState(state, playState) {
       state.playState = playState
+    },
+    updateLoginState(state, loginState) {
+      state.loginState = loginState
+      console.log(state.loginState,'kk');
     }
   },
 })

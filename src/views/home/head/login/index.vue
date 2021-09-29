@@ -56,6 +56,8 @@ export default {
           { min: 6, max: 15, message: "请输入6~15位的密码", trigger: "blur" },
         ],
       },
+      nickname: "",
+      avatarUrl: "",
     };
   },
   props: {
@@ -91,8 +93,9 @@ export default {
               this.form.password
           );
           if (res.code !== 200) return this.$message.error("登录失败");
-          console.log(res);
-          this.$store.commit('setUser', res.token);
+          this.$store.commit("setUser", res.token);
+          window.localStorage.setItem("userInfo", JSON.stringify(res.profile));
+          this.$store.commit("updateLoginState", true);
           this.$router.push("/");
           this.$refs.form.resetFields();
           this.$emit("change");
